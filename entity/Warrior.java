@@ -13,6 +13,15 @@ public class Warrior extends Player {
         if (!canUseSpecial()) {
             return name + "'s Shield Bash is on cooldown for " + specialCooldown + " more turns!";
         }
+        return executeShieldBash(targets, true);
+    }
+
+    @Override
+    public String usePlayerSpecialWithoutCooldown(List<Combatant> targets) {
+        return executeShieldBash(targets, false);
+    }
+
+    private String executeShieldBash(List<Combatant> targets, boolean applyCooldown) {
         if (targets == null || targets.isEmpty()) {
             return name + " has no target for Shield Bash!";
         }
@@ -23,10 +32,11 @@ public class Warrior extends Player {
         target.setStunned(true);
         target.setStunDuration(2);
 
-        useSpecial();
+        if (applyCooldown) {
+            useSpecial();
+        }
 
         return String.format("%s uses SHIELD BASH on %s for %d damage and stuns them!",
                 name, target.getName(), damageDealt);
     }
-
 }

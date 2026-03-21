@@ -22,6 +22,15 @@ public class Wizard extends Player {
         if (!canUseSpecial()) {
             return name + "'s Arcane Blast is on cooldown for " + specialCooldown + " more turns!";
         }
+        return executeArcaneBlast(targets, true);
+    }
+
+    @Override
+    public String usePlayerSpecialWithoutCooldown(List<Combatant> targets) {
+        return executeArcaneBlast(targets, false);
+    }
+
+    private String executeArcaneBlast(List<Combatant> targets, boolean applyCooldown) {
         if (targets == null || targets.isEmpty()) {
             return name + " has no targets for Arcane Blast!";
         }
@@ -46,7 +55,9 @@ public class Wizard extends Player {
             System.out.println(name + "'s Arcane Blast grows stronger! +10 ATK!");
         }
 
-        useSpecial();
+        if (applyCooldown) {
+            useSpecial();
+        }
 
         return String.format(
                 "%s casts ARCANE BLAST (snapshot ATK %d) - %d kill(s) this cast | total Arcane ATK bonus: +%d",
