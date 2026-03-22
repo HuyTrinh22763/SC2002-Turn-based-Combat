@@ -29,7 +29,6 @@ public class Warrior extends Player {
         Combatant target = targets.get(0);
         int damageDealt = AttributeManager.calculateDamage(getAttack(), target.getDefense());
         target.takeDamage(damageDealt);
-        target.setStunned(true);
         target.setStunDuration(2);
 
         if (applyCooldown) {

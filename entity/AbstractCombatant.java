@@ -124,12 +124,15 @@ public abstract class AbstractCombatant implements Combatant {
 
     @Override
     public boolean isStunned() {
-        return stunned && stunDuration > 0;
+        return stunDuration > 0;
     }
 
     @Override
-    public void setStunned(boolean stunned) {
-        this.stunned = stunned;
+    public void setStunned(boolean value) {
+        if (!value) {
+            stunDuration = 0;
+        }
+        syncStunFromDuration();
     }
 
     @Override
@@ -139,10 +142,12 @@ public abstract class AbstractCombatant implements Combatant {
 
     @Override
     public void setStunDuration(int duration) {
-        this.stunDuration = duration;
-        if (duration > 0) {
-            this.stunned = true;
-        }
+        stunDuration = Math.max(0, duration);
+        syncStunFromDuration();
+    }
+
+    private void syncStunFromDuration() {
+        stunned = stunDuration > 0;
     }
 
     @Override
@@ -178,10 +183,8 @@ public abstract class AbstractCombatant implements Combatant {
     public void onTurnEnd() {
         if (stunDuration > 0) {
             stunDuration--;
-            if (stunDuration <= 0) {
-                stunned = false;
-            }
         }
+        syncStunFromDuration();
     }
 
     @Override
