@@ -171,19 +171,17 @@ public abstract class AbstractCombatant implements Combatant {
 
     @Override
     public void onTurnStart() {
-        if (stunDuration > 0) {
-            stunDuration--;
-            if (stunDuration <= 0) {
-                stunned = false;
-            }
-            return;
-        }
         reduceCooldown();
     }
 
     @Override
     public void onTurnEnd() {
-        // Can be overridden
+        if (stunDuration > 0) {
+            stunDuration--;
+            if (stunDuration <= 0) {
+                stunned = false;
+            }
+        }
     }
 
     @Override
