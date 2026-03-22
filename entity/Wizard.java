@@ -52,7 +52,6 @@ public class Wizard extends Player {
         for (int i = 0; i < killsThisCast; i++) {
             arcaneBlastAttackBonus += 10;
             arcaneBlastKills++;
-            System.out.println(name + "'s Arcane Blast grows stronger! +10 ATK!");
         }
 
         if (applyCooldown) {

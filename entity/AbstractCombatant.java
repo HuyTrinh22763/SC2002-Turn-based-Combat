@@ -79,20 +79,14 @@ public abstract class AbstractCombatant implements Combatant {
         if (actualDamage < 0) return;
 
         currentHp = AttributeManager.clampHp(currentHp - actualDamage);
-
-        System.out.println(name + " takes " + actualDamage + " damage!");
     }
 
     @Override
     public void heal(int amount) {
         if (amount < 0) return;
 
-        int oldHp = currentHp;
         int capped = Math.min(maxHp, currentHp + amount);
         currentHp = AttributeManager.clampHp(capped);
-        int actualHeal = currentHp - oldHp;
-
-        System.out.println(name + " heals for " + actualHeal + " HP!");
     }
 
     @Override
