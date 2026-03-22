@@ -6,7 +6,8 @@ public abstract class Player extends AbstractCombatant {
 
     protected final PlayerClass playerClass;
     protected final Inventory inventory;
-    protected int smokeBombTurnsRemaining;
+    private static final int SMOKE_BOMB_USAGE = 3;
+    private int smokeBombEffectRemaining;
 
     public Player(String name, PlayerClass playerClass) {
         super(name,
@@ -17,7 +18,7 @@ public abstract class Player extends AbstractCombatant {
 
         this.playerClass = playerClass;
         this.inventory = new Inventory();
-        this.smokeBombTurnsRemaining = 0;
+        this.smokeBombEffectRemaining = 0;
     }
 
     public PlayerClass getPlayerClass() {
@@ -38,16 +39,20 @@ public abstract class Player extends AbstractCombatant {
     }
 
     public void activateSmokeBomb() {
-        smokeBombTurnsRemaining = 2;
+        smokeBombEffectRemaining = SMOKE_BOMB_USAGE;
     }
 
     public boolean isSmokeBombActive() {
-        return smokeBombTurnsRemaining > 0;
+        return smokeBombEffectRemaining > 0;
     }
 
     public void onRoundEnd() {
-        if (smokeBombTurnsRemaining > 0) {
-            smokeBombTurnsRemaining--;
+    }
+
+    /** After each enemy BasicAttack vs this player that dealt 0 damage because of Smoke Bomb. */
+    public void onSmokeBombEnemyAttack() {
+        if (smokeBombEffectRemaining > 0) {
+            smokeBombEffectRemaining--;
         }
     }
 

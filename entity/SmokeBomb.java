@@ -12,7 +12,9 @@ public class SmokeBomb implements Item {
     @Override
     public String use(Player user, List<Combatant> enemies, Combatant selectedTarget) {
         user.activateSmokeBomb();
-        return user.getName() + " uses Smoke Bomb: enemy attacks deal 0 damage for current and next turn.";
+        return user.getName()
+                + " uses Smoke Bomb: enemy BasicAttacks against you can deal 0 until the effect ends.";
+
     }
 
     
