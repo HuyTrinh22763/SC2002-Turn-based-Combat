@@ -1,4 +1,4 @@
-package entity;
+package entity.combatants;
 
 public abstract class AbstractCombatant implements Combatant {
 

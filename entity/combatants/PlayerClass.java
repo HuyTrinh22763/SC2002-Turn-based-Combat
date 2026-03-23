@@ -1,8 +1,8 @@
-package entity;
+package entity.combatants;
 
-public enum EnemyType {
-    GOBLIN("Goblin", 55, 35, 15, 25),
-    WOLF("Wolf", 40, 45, 5, 35);
+public enum PlayerClass {
+    WARRIOR("Warrior", 260, 40, 20, 30),
+    WIZARD("Wizard", 200, 50, 10, 20);
 
     private final String displayName;
     private final int baseHp;
@@ -10,7 +10,7 @@ public enum EnemyType {
     private final int baseDefense;
     private final int baseSpeed;
 
-    EnemyType(String displayName, int baseHp, int baseAttack, int baseDefense, int baseSpeed) {
+    PlayerClass(String displayName, int baseHp, int baseAttack, int baseDefense, int baseSpeed) {
         this.displayName = displayName;
         this.baseHp = baseHp;
         this.baseAttack = baseAttack;

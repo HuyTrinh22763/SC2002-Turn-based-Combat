@@ -1,13 +1,18 @@
-package entity;
+package entity.combatants;
 
 import java.util.List;
+
+import entity.items.Inventory;
+import entity.items.Item;
 
 public abstract class Player extends AbstractCombatant {
 
     protected final PlayerClass playerClass;
     protected final Inventory inventory;
     private static final int SMOKE_BOMB_USAGE = 3;
+    private static final int DEFEND_ROUNDS = 2;
     private int smokeBombEffectRemaining;
+    private int defendRoundsRemaining;
 
     public Player(String name, PlayerClass playerClass) {
         super(name,
@@ -19,6 +24,7 @@ public abstract class Player extends AbstractCombatant {
         this.playerClass = playerClass;
         this.inventory = new Inventory();
         this.smokeBombEffectRemaining = 0;
+        this.defendRoundsRemaining = 0;
     }
 
     public PlayerClass getPlayerClass() {
@@ -46,11 +52,27 @@ public abstract class Player extends AbstractCombatant {
         return smokeBombEffectRemaining > 0;
     }
 
-    public void onRoundEnd() {
+    public void activateDefend() {
+        if (defendRoundsRemaining == 0) {
+            modifyDefense(10);
+        }
+        defendRoundsRemaining = DEFEND_ROUNDS;
     }
 
-    /** After each enemy BasicAttack vs this player that dealt 0 damage because of Smoke Bomb. */
-    public void onSmokeBombEnemyAttack() {
+    public boolean isDefending() {
+        return defendRoundsRemaining > 0;
+    }
+
+    public void onRoundEnd() {
+        if (defendRoundsRemaining > 0) {
+            defendRoundsRemaining--;
+            if (defendRoundsRemaining == 0) {
+                modifyDefense(-10);
+            }
+        }
+    }
+
+    public void onSmokeAttack() {
         if (smokeBombEffectRemaining > 0) {
             smokeBombEffectRemaining--;
         }

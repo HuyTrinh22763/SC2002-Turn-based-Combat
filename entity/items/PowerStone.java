@@ -1,6 +1,10 @@
-package entity;
+package entity.items;
 
 import java.util.List;
+
+import entity.combatants.Combatant;
+import entity.combatants.Player;
+import entity.combatants.Warrior;
 
 public class PowerStone implements Item {
 

@@ -1,8 +1,11 @@
-package entity;
+package entity.items;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import entity.combatants.Combatant;
+import entity.combatants.Player;
 
 public class Inventory {
 

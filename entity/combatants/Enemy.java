@@ -1,5 +1,4 @@
-package entity;
-
+package entity.combatants;
 
 public abstract class Enemy extends AbstractCombatant {
 

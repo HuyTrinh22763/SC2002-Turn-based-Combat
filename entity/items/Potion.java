@@ -1,6 +1,9 @@
-package entity;
+package entity.items;
 
 import java.util.List;
+
+import entity.combatants.Combatant;
+import entity.combatants.Player;
 
 public class Potion implements Item {
 
