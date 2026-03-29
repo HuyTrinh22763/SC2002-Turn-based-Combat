@@ -4,7 +4,6 @@ import java.util.List;
 
 import entity.combatants.Combatant;
 import entity.combatants.Player;
-import entity.combatants.Warrior;
 
 public class PowerStone implements Item {
 
@@ -15,22 +14,16 @@ public class PowerStone implements Item {
 
     @Override
     public String use(Player user, List<Combatant> enemies, Combatant selectedTarget) {
-        if (user instanceof Warrior) {
-            if (selectedTarget == null) {
-                return "Power Stone failed: Warrior requires a selected target.";
-            }
-            return user.usePlayerSpecialWithoutCooldown(List.of(selectedTarget));
-        }
-        return user.usePlayerSpecialWithoutCooldown(enemies);
+        return user.usePlayerSpecialWithoutCooldown(user.resolveSpecialTargets(enemies, selectedTarget));
     }
 
     @Override
     public boolean canUse(Player user, List<Combatant> enemies, Combatant selectedTarget){
-        return !(user instanceof Warrior) || selectedTarget != null;
+        return user.isValidSpecialTargetSelection(selectedTarget);
     }
 
     @Override
     public String cannotUseMessage(Player user, List<Combatant> enemies, Combatant selectedTarget){
-        return "Power Stone failed: Warrior requires a selected target";
+        return "Power Stone failed: special skill target requirements not met.";
     }
 }

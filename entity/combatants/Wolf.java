@@ -1,5 +1,7 @@
 package entity.combatants;
 
+import entity.battlerules.ActionType;
+
 public class Wolf extends Enemy {
 
     public Wolf(String name) {
@@ -7,8 +9,8 @@ public class Wolf extends Enemy {
     }
 
     @Override
-    public String decideAction() {
-        return "ATTACK";
+    public ActionType decideAction() {
+        return ActionType.BASIC_ATTACK;
     }
 
 }

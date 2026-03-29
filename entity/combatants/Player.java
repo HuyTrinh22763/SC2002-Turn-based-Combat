@@ -1,6 +1,7 @@
 package entity.combatants;
 
 import java.util.List;
+import java.util.Collections;
 
 import entity.items.Inventory;
 import entity.items.Item;
@@ -80,6 +81,11 @@ public abstract class Player extends AbstractCombatant {
 
     public abstract String usePlayerSpecial(List<Combatant> targets);
     public abstract String usePlayerSpecialWithoutCooldown(List<Combatant> targets);
+    public abstract boolean isValidSpecialTargetSelection(Combatant selectedTarget);
+
+    public List<Combatant> resolveSpecialTargets(List<Combatant> enemies, Combatant selectedTarget) {
+        return enemies == null ? Collections.emptyList() : enemies;
+    }
 
     @Override
     public String toString() {

@@ -1,6 +1,7 @@
 package entity.combatants;
 
 import java.util.List;
+import java.util.Collections;
 
 public class Wizard extends Player {
 
@@ -28,6 +29,16 @@ public class Wizard extends Player {
     @Override
     public String usePlayerSpecialWithoutCooldown(List<Combatant> targets) {
         return executeArcaneBlast(targets, false);
+    }
+
+    @Override
+    public boolean isValidSpecialTargetSelection(Combatant selectedTarget) {
+        return true;
+    }
+
+    @Override
+    public List<Combatant> resolveSpecialTargets(List<Combatant> enemies, Combatant selectedTarget) {
+        return enemies == null ? Collections.emptyList() : enemies;
     }
 
     private String executeArcaneBlast(List<Combatant> targets, boolean applyCooldown) {

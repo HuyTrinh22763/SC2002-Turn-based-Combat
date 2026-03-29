@@ -1,6 +1,7 @@
 package entity.combatants;
 
 import java.util.List;
+import java.util.Collections;
 
 public class Warrior extends Player {
 
@@ -19,6 +20,19 @@ public class Warrior extends Player {
     @Override
     public String usePlayerSpecialWithoutCooldown(List<Combatant> targets) {
         return executeShieldBash(targets, false);
+    }
+
+    @Override
+    public boolean isValidSpecialTargetSelection(Combatant selectedTarget) {
+        return selectedTarget != null;
+    }
+
+    @Override
+    public List<Combatant> resolveSpecialTargets(List<Combatant> enemies, Combatant selectedTarget) {
+        if (selectedTarget == null) {
+            return Collections.emptyList();
+        }
+        return Collections.singletonList(selectedTarget);
     }
 
     private String executeShieldBash(List<Combatant> targets, boolean applyCooldown) {

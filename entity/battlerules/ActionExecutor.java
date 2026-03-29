@@ -2,14 +2,14 @@ package entity.battlerules;
 
 import entity.combatants.AttributeManager;
 import entity.combatants.Combatant;
+import entity.combatants.Enemy;
 import entity.combatants.Player;
-import entity.combatants.Warrior;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ActionExecutor {
+public class ActionExecutor implements ActionProcessor {
 
     public ActionResult execute(ActionRequest request) {
         if (request == null || request.getActor() == null || request.getActionType() == null) {
@@ -41,6 +41,20 @@ public class ActionExecutor {
         Combatant target = request.getSelectedTarget();
         if (target == null || !target.isAlive()) {
             return ActionResult.failure(ActionType.BASIC_ATTACK, "Invalid Basic Attack target.");
+        }
+
+        if (actor instanceof Enemy && target instanceof Player) {
+            Player playerTarget = (Player) target;
+            if (playerTarget.isSmokeBombActive()) {
+                playerTarget.onSmokeAttack();
+
+                List<String> messages = new ArrayList<>();
+                messages.add(actor.getName()
+                        + " uses BasicAttack on "
+                        + target.getName()
+                        + " but Smoke Bomb reduces the damage to 0.");
+                return ActionResult.success(ActionType.BASIC_ATTACK, 0, 0, false, messages);
+            }
         }
 
         int damage = AttributeManager.calculateDamage(actor.getAttack(), target.getDefense());
@@ -101,20 +115,10 @@ public class ActionExecutor {
                     "Only player combatants can use special skills.");
         }
 
-        List<Combatant> targets = resolveSpecialTargets(player, request);
+        List<Combatant> targets = player.resolveSpecialTargets(request.getEnemies(), request.getSelectedTarget());
         String message = player.usePlayerSpecial(targets);
         return ActionResult.success(ActionType.SPECIAL_SKILL, 0, 0, false,
                 Collections.singletonList(message));
-    }
-
-    private List<Combatant> resolveSpecialTargets(Player player, ActionRequest request) {
-        if (player instanceof Warrior) {
-            if (request.getSelectedTarget() == null) {
-                return Collections.emptyList();
-            }
-            return Collections.singletonList(request.getSelectedTarget());
-        }
-        return defaultList(request.getEnemies());
     }
 
     private List<Combatant> defaultList(List<Combatant> list) {

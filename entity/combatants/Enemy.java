@@ -1,5 +1,7 @@
 package entity.combatants;
 
+import entity.battlerules.ActionType;
+
 public abstract class Enemy extends AbstractCombatant {
 
     protected final EnemyType enemyType;
@@ -18,7 +20,7 @@ public abstract class Enemy extends AbstractCombatant {
         return enemyType;
     }
 
-    public abstract String decideAction();
+    public abstract ActionType decideAction();
 
     @Override
     public String toString() {

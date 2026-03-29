@@ -37,7 +37,7 @@ public final class LevelCatalog {
     }
 
     public static LevelDefinition getByLevelNumber(int levelNumber) {
-        for (LevelDefinition level : DEFAULT_LEVELS) {
+        for (LevelDefinition level : getDefaultLevels()) {
             if (level.getLevelNumber() == levelNumber) {
                 return level;
             }
@@ -49,11 +49,6 @@ public final class LevelCatalog {
         if (difficulty == null) {
             return null;
         }
-        for (LevelDefinition level : DEFAULT_LEVELS) {
-            if (level.getDifficulty() == difficulty) {
-                return level;
-            }
-        }
-        return null;
+        return getByLevelNumber(difficulty.getLevelNumber());
     }
 }
