@@ -49,6 +49,11 @@ public final class LevelCatalog {
         if (difficulty == null) {
             return null;
         }
-        return getByLevelNumber(difficulty.getLevelNumber());
+        for (LevelDefinition level : getDefaultLevels()) {
+            if (level.getDifficulty() == difficulty) {
+                return level;
+            }
+        }
+        return null;
     }
 }

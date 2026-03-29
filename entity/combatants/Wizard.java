@@ -78,6 +78,7 @@ public class Wizard extends Player {
     // Must call this method at the end of each level
     public void resetArcaneBlastBonusForLevelEnd() {
         arcaneBlastAttackBonus = 0;
+        arcaneBlastKills = 0;
     }
 
     public int getArcaneBlastKills() {
@@ -86,5 +87,20 @@ public class Wizard extends Player {
 
     public int getArcaneBlastAttackBonus() {
         return arcaneBlastAttackBonus;
+    }
+
+    @Override
+    public int getLevelSpecialKills() {
+        return getArcaneBlastKills();
+    }
+
+    @Override
+    public int getLevelSpecialBonus() {
+        return getArcaneBlastAttackBonus();
+    }
+
+    @Override
+    public void resetLevelSpecialProgressForLevelEnd() {
+        resetArcaneBlastBonusForLevelEnd();
     }
 }

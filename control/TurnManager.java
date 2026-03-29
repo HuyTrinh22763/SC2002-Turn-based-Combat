@@ -1,13 +1,10 @@
 package control;
 
-import entity.battlerules.ActionExecutor;
 import entity.battlerules.ActionProcessor;
 import entity.battlerules.ActionRequest;
 import entity.battlerules.ActionResult;
 import entity.battlerules.ActionType;
-import entity.battlerules.DifficultyLevel;
 import entity.battlerules.EnemyWave;
-import entity.battlerules.LevelCatalog;
 import entity.battlerules.LevelDefinition;
 import entity.combatants.Combatant;
 import entity.combatants.Enemy;
@@ -34,33 +31,13 @@ public class TurnManager {
     private int currentTurnIndex;
     private boolean backupWaveSpawned;
     private int spawnedEnemyCounter;
-
-    public TurnManager(Player player, List<Combatant> enemies, TurnOrderStrategy turnOrderStrategy) {
-        this(player, enemies, turnOrderStrategy, new ActionExecutor());
-    }
+    private boolean levelSpecialProgressFinalized;
+    private int lastLevelSpecialKills;
+    private int lastLevelSpecialBonus;
+    private int playerTurnCounter;
+    private final List<TurnSpecialSnapshot> turnSpecialSnapshots;
 
     public TurnManager(Player player, List<Combatant> enemies, TurnOrderStrategy turnOrderStrategy,
-            ActionProcessor actionProcessor) {
-        this(player, enemies, turnOrderStrategy, actionProcessor, null, null);
-    }
-
-    public TurnManager(Player player, TurnOrderStrategy turnOrderStrategy, DifficultyLevel difficultyLevel) {
-        this(player, turnOrderStrategy, new ActionExecutor(), requireLevelByDifficulty(difficultyLevel),
-                new DefaultEnemyFactory());
-    }
-
-    public TurnManager(Player player, TurnOrderStrategy turnOrderStrategy, int levelNumber) {
-        this(player, turnOrderStrategy, new ActionExecutor(), requireLevelByNumber(levelNumber),
-                new DefaultEnemyFactory());
-    }
-
-    public TurnManager(Player player, TurnOrderStrategy turnOrderStrategy, ActionProcessor actionProcessor,
-            LevelDefinition levelDefinition, EnemyFactory enemyFactory) {
-        this(player, createInitialEnemies(levelDefinition, enemyFactory), turnOrderStrategy, actionProcessor,
-                levelDefinition, enemyFactory);
-    }
-
-    private TurnManager(Player player, List<Combatant> enemies, TurnOrderStrategy turnOrderStrategy,
             ActionProcessor actionProcessor, LevelDefinition levelDefinition, EnemyFactory enemyFactory) {
         if (player == null) {
             throw new IllegalArgumentException("Player cannot be null.");
@@ -78,11 +55,15 @@ public class TurnManager {
         this.player = player;
         this.enemies = new ArrayList<>();
 
-        if (enemies == null) { 
+        List<Combatant> initialEnemies = enemies;
+        if (initialEnemies == null) {
+            initialEnemies = createInitialEnemies(levelDefinition, enemyFactory);
+        }
+        if (initialEnemies == null) {
             throw new IllegalArgumentException("Enemies list cannot be null.");
         }
         
-        for (Combatant enemy : enemies) {
+        for (Combatant enemy : initialEnemies) {
             if (enemy != null) {
                 this.enemies.add(enemy);
             }
@@ -102,6 +83,11 @@ public class TurnManager {
         this.currentTurnIndex = 0;
         this.backupWaveSpawned = false;
         this.spawnedEnemyCounter = this.enemies.size();
+        this.levelSpecialProgressFinalized = false;
+        this.lastLevelSpecialKills = 0;
+        this.lastLevelSpecialBonus = 0;
+        this.playerTurnCounter = 0;
+        this.turnSpecialSnapshots = new ArrayList<>();
     }
 
     public void startNewRound() {
@@ -199,16 +185,34 @@ public class TurnManager {
         return battleState != BattleState.ONGOING;
     }
 
+    public int getLastLevelSpecialKills() {
+        return lastLevelSpecialKills;
+    }
+
+    public int getLastLevelSpecialBonus() {
+        return lastLevelSpecialBonus;
+    }
+
+    public List<TurnSpecialSnapshot> getTurnSpecialSnapshotsView() {
+        return Collections.unmodifiableList(turnSpecialSnapshots);
+    }
+
     private ActionResult processPlayerTurn(ActionRequest playerRequest) {
+        int specialKillsBefore = player.getLevelSpecialKills();
+        int specialBonusBefore = player.getLevelSpecialBonus();
         String validationMessage = playerActionValidator.validate(player, enemies, playerRequest);
         if (validationMessage != null) {
-            return ActionResult.failure(
+            ActionResult failedResult = ActionResult.failure(
                     playerRequest == null ? null : playerRequest.getActionType(),
                     validationMessage
             );
+            recordTurnSpecialSnapshot(playerRequest, failedResult, specialKillsBefore, specialBonusBefore);
+            return failedResult;
         }
 
-        return actionProcessor.execute(playerRequest);
+        ActionResult result = actionProcessor.execute(playerRequest);
+        recordTurnSpecialSnapshot(playerRequest, result, specialKillsBefore, specialBonusBefore);
+        return result;
     }
 
     private ActionResult processEnemyTurn(Enemy enemy) {
@@ -248,6 +252,7 @@ public class TurnManager {
     private void updateBattleState() {
         if (!player.isAlive()) {
             battleState = BattleState.PLAYER_DEFEAT;
+            finalizeLevelSpecialProgress();
             return;
         }
 
@@ -265,6 +270,7 @@ public class TurnManager {
                 battleState = BattleState.ONGOING;
             } else {
                 battleState = BattleState.PLAYER_VICTORY;
+                finalizeLevelSpecialProgress();
             }
         } else {
             battleState = BattleState.ONGOING;
@@ -326,20 +332,41 @@ public class TurnManager {
         return initialEnemies;
     }
 
-    private static LevelDefinition requireLevelByDifficulty(DifficultyLevel difficultyLevel) {
-        LevelDefinition definition = LevelCatalog.getByDifficulty(difficultyLevel);
-        if (definition == null) {
-            throw new IllegalArgumentException("Unknown difficulty level: " + difficultyLevel);
+    private void finalizeLevelSpecialProgress() {
+        if (levelSpecialProgressFinalized) {
+            return;
         }
-        return definition;
+
+        lastLevelSpecialKills = player.getLevelSpecialKills();
+        lastLevelSpecialBonus = player.getLevelSpecialBonus();
+        player.resetLevelSpecialProgressForLevelEnd();
+        levelSpecialProgressFinalized = true;
     }
 
-    private static LevelDefinition requireLevelByNumber(int levelNumber) {
-        LevelDefinition definition = LevelCatalog.getByLevelNumber(levelNumber);
-        if (definition == null) {
-            throw new IllegalArgumentException("Unknown level number: " + levelNumber);
+    private void recordTurnSpecialSnapshot(ActionRequest playerRequest, ActionResult result, int specialKillsBefore,
+            int specialBonusBefore) {
+        int specialKillsAfter = player.getLevelSpecialKills();
+        int specialBonusAfter = player.getLevelSpecialBonus();
+        int deltaKills = specialKillsAfter - specialKillsBefore;
+        int deltaBonus = specialBonusAfter - specialBonusBefore;
+
+        ActionType actionType = result == null ? null : result.getActionType();
+        if (actionType == null && playerRequest != null) {
+            actionType = playerRequest.getActionType();
         }
-        return definition;
+
+        playerTurnCounter++;
+        turnSpecialSnapshots.add(new TurnSpecialSnapshot(
+                roundNumber,
+                playerTurnCounter,
+                player.getName(),
+                player.getPlayerClass(),
+                actionType,
+                deltaKills,
+                deltaBonus,
+                specialKillsAfter,
+                specialBonusAfter
+        ));
     }
 }
 

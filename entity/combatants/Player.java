@@ -60,9 +60,6 @@ public abstract class Player extends AbstractCombatant {
         defendRoundsRemaining = DEFEND_ROUNDS;
     }
 
-    public boolean isDefending() {
-        return defendRoundsRemaining > 0;
-    }
 
     public void onRoundEnd() {
         if (defendRoundsRemaining > 0) {
@@ -85,6 +82,18 @@ public abstract class Player extends AbstractCombatant {
 
     public List<Combatant> resolveSpecialTargets(List<Combatant> enemies, Combatant selectedTarget) {
         return enemies == null ? Collections.emptyList() : enemies;
+    }
+
+    public int getLevelSpecialKills() {
+        return 0;
+    }
+
+    public int getLevelSpecialBonus() {
+        return 0;
+    }
+
+    public void resetLevelSpecialProgressForLevelEnd() {
+        // Default no operation for classes different from Wizard
     }
 
     @Override

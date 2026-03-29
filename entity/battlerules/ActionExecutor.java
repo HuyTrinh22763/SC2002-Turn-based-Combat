@@ -99,13 +99,12 @@ public class ActionExecutor implements ActionProcessor {
         int afterSize = player.getInventory().size();
         boolean consumed = afterSize < beforeSize;
 
-        List<String> messages = new ArrayList<>();
-        messages.add(message);
         if (!consumed) {
-            messages.add("Item was not consumed.");
+            return ActionResult.failure(ActionType.USE_ITEM, message);
         }
 
-        return ActionResult.success(ActionType.USE_ITEM, 0, 0, false, messages);
+        return ActionResult.success(ActionType.USE_ITEM, 0, 0, false,
+                Collections.singletonList(message));
     }
 
     private ActionResult executeSpecialSkill(ActionRequest request) {
@@ -117,8 +116,19 @@ public class ActionExecutor implements ActionProcessor {
 
         List<Combatant> targets = player.resolveSpecialTargets(request.getEnemies(), request.getSelectedTarget());
         String message = player.usePlayerSpecial(targets);
+        if (isSpecialSkillFailureMessage(message)) {
+            return ActionResult.failure(ActionType.SPECIAL_SKILL, message);
+        }
         return ActionResult.success(ActionType.SPECIAL_SKILL, 0, 0, false,
                 Collections.singletonList(message));
+    }
+
+    private static boolean isSpecialSkillFailureMessage(String message) {
+        if (message == null) {
+            return true;
+        }
+        String lower = message.toLowerCase();
+        return lower.contains("cooldown") || lower.contains("no target");
     }
 
     private List<Combatant> defaultList(List<Combatant> list) {
