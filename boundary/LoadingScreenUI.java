@@ -7,11 +7,6 @@ import entity.Item;
 import entity.PlayerClass;
 
 import java.util.List;
-
-/**
- * Displays the loading/setup screen before the game begins.
- * Covers: player selection, item selection, difficulty selection.
- */
 public class LoadingScreenUI {
 
     private static final String SEPARATOR = "=".repeat(60);
@@ -23,20 +18,12 @@ public class LoadingScreenUI {
         this.input = input;
     }
 
-    // ----------------------------------------------------------------
-    // Banner
-    // ----------------------------------------------------------------
-
     public void displayWelcomeBanner() {
         System.out.println(SEPARATOR);
         System.out.println("        TURN-BASED COMBAT ARENA");
         System.out.println(SEPARATOR);
         System.out.println();
     }
-
-    // ----------------------------------------------------------------
-    // Player class selection
-    // ----------------------------------------------------------------
 
     public void displayPlayerClasses() {
         System.out.println("=== CHOOSE YOUR CHARACTER ===");
@@ -52,9 +39,6 @@ public class LoadingScreenUI {
         }
     }
 
-    /**
-     * @return 0-based index of chosen PlayerClass
-     */
     public int promptPlayerClassSelection() {
         displayPlayerClasses();
         System.out.println("Enter the number of your chosen class:");
@@ -65,10 +49,6 @@ public class LoadingScreenUI {
         return input.readLine("Enter your character's name: ");
     }
 
-    // ----------------------------------------------------------------
-    // Item selection
-    // ----------------------------------------------------------------
-
     public void displayAvailableItems(List<Item> availableItems) {
         System.out.println(THIN_SEP);
         System.out.println("=== AVAILABLE ITEMS (choose 2; duplicates allowed) ===");
@@ -78,9 +58,6 @@ public class LoadingScreenUI {
         System.out.println();
     }
 
-    /**
-     * @return 0-based index of the chosen item
-     */
     public int promptItemSelection(List<Item> availableItems, int slotNumber) {
         displayAvailableItems(availableItems);
         System.out.printf("Select item for slot %d:%n", slotNumber);
@@ -100,10 +77,6 @@ public class LoadingScreenUI {
         System.out.println();
     }
 
-    // ----------------------------------------------------------------
-    // Difficulty / level selection
-    // ----------------------------------------------------------------
-
     public void displayDifficultyLevels() {
         System.out.println(THIN_SEP);
         System.out.println("=== SELECT DIFFICULTY ===");
@@ -113,18 +86,11 @@ public class LoadingScreenUI {
         System.out.println();
     }
 
-    /**
-     * @return difficulty level 1–3
-     */
     public int promptDifficultySelection() {
         displayDifficultyLevels();
         System.out.println("Enter difficulty (1-3):");
         return input.readInt(1, 3);
     }
-
-    // ----------------------------------------------------------------
-    // Enemy roster preview
-    // ----------------------------------------------------------------
 
     public void displayEnemyRoster() {
         System.out.println(THIN_SEP);
