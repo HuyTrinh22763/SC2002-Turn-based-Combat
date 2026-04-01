@@ -5,9 +5,7 @@ import entity.Player;
 
 import java.util.List;
 
-/**
- * Displays the victory/defeat screen and post-game options.
- */
+
 public class GameCompletionUI {
 
     private static final String SEPARATOR = "=".repeat(60);
@@ -17,11 +15,7 @@ public class GameCompletionUI {
     public GameCompletionUI(InputHandler input) {
         this.input = input;
     }
-
-    // ----------------------------------------------------------------
-    // Victory
-    // ----------------------------------------------------------------
-
+    
     public void displayVictory(Player player, int totalRounds) {
         System.out.println();
         System.out.println(SEPARATOR);
@@ -44,9 +38,6 @@ public class GameCompletionUI {
         System.out.println();
     }
 
-    // ----------------------------------------------------------------
-    // Defeat
-    // ----------------------------------------------------------------
 
     public void displayDefeat(List<Combatant> remainingEnemies, int totalRounds) {
         System.out.println();
@@ -62,16 +53,6 @@ public class GameCompletionUI {
         System.out.println();
     }
 
-    // ----------------------------------------------------------------
-    // Post-game menu
-    // ----------------------------------------------------------------
-
-    /**
-     * Displays the post-game menu and returns the player's choice:
-     *   1 = replay with same settings
-     *   2 = new game (return to home screen)
-     *   3 = exit
-     */
     public int promptPostGameChoice() {
         System.out.println("What would you like to do?");
         System.out.println("  [1] Replay with same settings");
