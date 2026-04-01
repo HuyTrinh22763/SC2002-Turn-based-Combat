@@ -6,14 +6,6 @@ import entity.Player;
 
 import java.util.List;
 
-/**
- * Displays all in-battle information:
- *   - Round headers
- *   - Combatant status
- *   - Action menus
- *   - Action results
- *   - Turn summaries
- */
 public class BattleUI {
 
     private static final String SEPARATOR = "=".repeat(60);
@@ -25,20 +17,12 @@ public class BattleUI {
         this.input = input;
     }
 
-    // ----------------------------------------------------------------
-    // Round header
-    // ----------------------------------------------------------------
-
     public void displayRoundHeader(int roundNumber) {
         System.out.println();
         System.out.println(SEPARATOR);
         System.out.printf("  ROUND %d%n", roundNumber);
         System.out.println(SEPARATOR);
     }
-
-    // ----------------------------------------------------------------
-    // Combatant status
-    // ----------------------------------------------------------------
 
     public void displayCombatantStatus(Player player, List<Combatant> enemies) {
         System.out.println(THIN_SEP);
@@ -75,10 +59,6 @@ public class BattleUI {
         return sb.toString();
     }
 
-    // ----------------------------------------------------------------
-    // Action menu
-    // ----------------------------------------------------------------
-
     public void displayActionMenu(Player player) {
         System.out.println("Choose your action:");
         System.out.println("  [1] Basic Attack");
@@ -96,17 +76,10 @@ public class BattleUI {
         System.out.println("  [4] Special Skill" + cooldownNote);
     }
 
-    /**
-     * @return player's chosen action 1–4
-     */
     public int promptActionSelection(Player player) {
         displayActionMenu(player);
         return input.readInt(1, 4);
     }
-
-    // ----------------------------------------------------------------
-    // Target selection
-    // ----------------------------------------------------------------
 
     public void displayAliveEnemies(List<Combatant> enemies) {
         System.out.println("Select a target:");
@@ -118,17 +91,10 @@ public class BattleUI {
         }
     }
 
-    /**
-     * @return 0-based index of the chosen alive enemy
-     */
     public int promptTargetSelection(List<Combatant> enemies) {
         displayAliveEnemies(enemies);
         return input.readInt(1, enemies.size()) - 1;
     }
-
-    // ----------------------------------------------------------------
-    // Item selection mid-battle
-    // ----------------------------------------------------------------
 
     public void displayItemMenu(Player player) {
         System.out.println("Select an item to use:");
@@ -137,18 +103,11 @@ public class BattleUI {
             System.out.printf("  [%d] %s%n", i + 1, items.get(i).getName());
         }
     }
-
-    /**
-     * @return 0-based index of the chosen item
-     */
+    
     public int promptItemSelection(Player player) {
         displayItemMenu(player);
         return input.readInt(1, player.getInventory().size()) - 1;
     }
-
-    // ----------------------------------------------------------------
-    // Action result / event messages
-    // ----------------------------------------------------------------
 
     public void displayActionResult(String message) {
         System.out.println("  >> " + message);
@@ -171,9 +130,6 @@ public class BattleUI {
         System.out.println();
     }
 
-    // ----------------------------------------------------------------
-    // End-of-round summary
-    // ----------------------------------------------------------------
 
     public void displayEndOfRoundSummary(int roundNumber, Player player, List<Combatant> enemies) {
         System.out.println();
@@ -186,10 +142,6 @@ public class BattleUI {
         }
         System.out.println(THIN_SEP);
     }
-
-    // ----------------------------------------------------------------
-    // Turn order announcement
-    // ----------------------------------------------------------------
 
     public void displayTurnOrder(List<Combatant> order) {
         System.out.print("Turn order: ");
