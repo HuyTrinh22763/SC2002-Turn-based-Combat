@@ -30,7 +30,7 @@ public class TurnManager {
     private List<Combatant> currentTurnOrder;
     private int currentTurnIndex;
     private boolean backupWaveSpawned;
-    private int spawnedEnemyCounter;
+
     private boolean levelSpecialProgressFinalized;
     private int lastLevelSpecialKills;
     private int lastLevelSpecialBonus;
@@ -82,7 +82,7 @@ public class TurnManager {
         this.currentTurnOrder = new ArrayList<>();
         this.currentTurnIndex = 0;
         this.backupWaveSpawned = false;
-        this.spawnedEnemyCounter = this.enemies.size();
+
         this.levelSpecialProgressFinalized = false;
         this.lastLevelSpecialKills = 0;
         this.lastLevelSpecialBonus = 0;
@@ -306,8 +306,7 @@ public class TurnManager {
         }
 
         for (EnemyType enemyType : backupWave.getEnemiesView()) {
-            spawnedEnemyCounter++;
-            Combatant newEnemy = enemyFactory.createEnemy(enemyType, enemyType.getDisplayName() + " " + spawnedEnemyCounter);
+            Combatant newEnemy = enemyFactory.createEnemy(enemyType, enemyType.getDisplayName());
             if (newEnemy != null) {
                 enemies.add(newEnemy);
             }
@@ -321,10 +320,8 @@ public class TurnManager {
             return initialEnemies;
         }
 
-        int index = 0;
         for (EnemyType enemyType : levelDefinition.getInitialWave().getEnemiesView()) {
-            index++;
-            Combatant enemy = enemyFactory.createEnemy(enemyType, enemyType.getDisplayName() + " " + index);
+            Combatant enemy = enemyFactory.createEnemy(enemyType, enemyType.getDisplayName());
             if (enemy != null) {
                 initialEnemies.add(enemy);
             }
