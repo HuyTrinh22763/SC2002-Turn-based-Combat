@@ -252,7 +252,6 @@ public class TurnManager {
     private void updateBattleState() {
         if (!player.isAlive()) {
             battleState = BattleState.PLAYER_DEFEAT;
-            finalizeLevelSpecialProgress();
             return;
         }
 
@@ -270,7 +269,6 @@ public class TurnManager {
                 battleState = BattleState.ONGOING;
             } else {
                 battleState = BattleState.PLAYER_VICTORY;
-                finalizeLevelSpecialProgress();
             }
         } else {
             battleState = BattleState.ONGOING;
@@ -329,7 +327,7 @@ public class TurnManager {
         return initialEnemies;
     }
 
-    private void finalizeLevelSpecialProgress() {
+    public void finalizeLevelSpecialProgress() {
         if (levelSpecialProgressFinalized) {
             return;
         }

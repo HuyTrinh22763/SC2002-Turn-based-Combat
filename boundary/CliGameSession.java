@@ -130,6 +130,8 @@ public class CliGameSession {
             input.waitForEnter();
         }
 
+        turnManager.finalizeLevelSpecialProgress();
+
         lastBattleState = turnManager.getBattleState();
         lastPlayer = player;
         lastEnemies = turnManager.getEnemiesView();
