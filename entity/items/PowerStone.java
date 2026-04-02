@@ -13,6 +13,11 @@ public class PowerStone implements Item {
     }
 
     @Override
+    public boolean requiresTarget(Player user) {
+        return user.getPlayerClass().requiresTargetForSpecialSkill();
+    }
+
+    @Override
     public String use(Player user, List<Combatant> enemies, Combatant selectedTarget) {
         return user.usePlayerSpecialWithoutCooldown(user.resolveSpecialTargets(enemies, selectedTarget));
     }

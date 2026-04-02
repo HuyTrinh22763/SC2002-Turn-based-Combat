@@ -11,8 +11,8 @@ import entity.battlerules.DifficultyLevel;
 import entity.combatants.Combatant;
 import entity.combatants.Player;
 import entity.combatants.PlayerClass;
-import entity.combatants.Warrior;
-import entity.combatants.Wizard;
+import control.PlayerFactory;
+import control.DefaultPlayerFactory;
 import entity.items.Item;
 
 import java.util.ArrayList;
@@ -47,7 +47,10 @@ public class CliGameSession {
                     lastEnemies,
                     lastRoundCount);
             List<String> postGameOptions = Arrays.asList(
-                    "Replay with same settings", "Start a new game", "Exit");
+                    "Replay with same setup",
+                    "Start a new game",
+                    "Exit game"
+            );
             renderer.printPostGameMenu(postGameOptions);
             CliInput.PostGameOption option = input.choosePostGameOption(postGameOptions.size());
             if (option == CliInput.PostGameOption.REPLAY_SAME) {
@@ -159,8 +162,7 @@ public class CliGameSession {
                 renderer.printInventory(items);
                 int itemIndex = input.chooseItem(items);
                 Combatant target = null;
-                if (player.getPlayerClass() == PlayerClass.WARRIOR
-                        && "Power Stone".equals(items.get(itemIndex).getName())) {
+                if (items.get(itemIndex).requiresTarget(player)) {
                        List<Combatant> aliveEnemies = getAliveEnemies(allEnemies);
                        renderer.printAliveEnemies(aliveEnemies);
                        target = aliveEnemies.get(input.chooseEnemyTarget(aliveEnemies));
@@ -169,7 +171,7 @@ public class CliGameSession {
             }
 
             Combatant specialTarget = null;
-            if (player.getPlayerClass() == PlayerClass.WARRIOR) {
+            if (player.getPlayerClass().requiresTargetForSpecialSkill()) {
                 List<Combatant> aliveEnemies = getAliveEnemies(allEnemies);
                 renderer.printAliveEnemies(aliveEnemies);
                 specialTarget = aliveEnemies.get(input.chooseEnemyTarget(aliveEnemies));
@@ -179,10 +181,8 @@ public class CliGameSession {
     }
 
     private Player createPlayer(GameSetup setup) {
-        if (setup.getPlayerClass() == PlayerClass.WARRIOR) {
-            return new Warrior(DEFAULT_PLAYER_NAME);
-        }
-        return new Wizard(DEFAULT_PLAYER_NAME);
+        PlayerFactory factory = new DefaultPlayerFactory();
+        return factory.createPlayer(setup.getPlayerClass(), DEFAULT_PLAYER_NAME);
     }
 
     private PlayerClass choosePlayerClass() {

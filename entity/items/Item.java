@@ -11,6 +11,10 @@ public interface Item {
         return true;
     }
 
+    default boolean requiresTarget(Player user) {
+        return false;
+    }
+
     String cannotUseMessage(Player user, List<Combatant> enemies, Combatant selectedTarget);
     
     String use(Player user, List<Combatant> enemies, Combatant selectedTarget);
