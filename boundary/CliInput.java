@@ -24,6 +24,13 @@ public class CliInput {
         while (true) {
             System.out.print(prompt);
             String raw = scanner.nextLine().trim();
+            if (raw.equalsIgnoreCase("exit") || raw.equals("0")) {
+                if (confirmExit()) {
+                    throw new QuitGameException();
+                } else {
+                    continue;
+                }
+            }
             try {
                 int value = Integer.parseInt(raw);
                 if (value >= min && value <= max) {
@@ -47,8 +54,31 @@ public class CliInput {
 
 
     public void waitForEnter() {
-        System.out.print("Press Enter to continue...");
-        scanner.nextLine();
+        while (true) {
+            System.out.print("Press Enter to continue... (or '0' to exit) ");
+            String raw = scanner.nextLine().trim();
+            if (raw.equalsIgnoreCase("exit") || raw.equals("0")) {
+                if (confirmExit()) {
+                    throw new QuitGameException();
+                } else {
+                    continue;
+                }
+            }
+            break;
+        }
+    }
+
+    private boolean confirmExit() {
+        while (true) {
+            System.out.print("Are you sure you want to quit? (y/n): ");
+            String raw = scanner.nextLine().trim().toLowerCase();
+            if (raw.equals("y") || raw.equals("yes")) {
+                return true;
+            } else if (raw.equals("n") || raw.equals("no")) {
+                return false;
+            }
+            System.out.println("Invalid input. Please enter 'y' or 'n'.");
+        }
     }
 
     public PostGameOption choosePostGameOption(int maxOptions) {

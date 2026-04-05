@@ -33,6 +33,14 @@ public class CliGameSession {
     }
 
     public void run() {
+        try {
+            runGameLoop();
+        } catch (QuitGameException e) {
+            System.out.println("\nExiting game early. Thanks for playing!");
+        }
+    }
+
+    private void runGameLoop() {
         GameSetup currentSetup = collectSetup();
         boolean running = true;
         while (running) {
