@@ -27,6 +27,8 @@ public class CliRenderer {
 
     public void renderSetupPage() {
         boxTitle("TURN-BASED COMBAT ARENA");
+        System.out.println(center("Enter '0' or 'exit' anytime to quit."));
+        printLine();
         boxTitle("GAME SETUP");
         printPlayerClasses();
         printEnemyTypes();
@@ -139,6 +141,7 @@ public class CliRenderer {
 
     public void printPlayerActions(boolean hasItems) {
         printSection("ACTION MENU");
+        System.out.println("  0) Exit Game");
         System.out.println("  1) BasicAttack");
         System.out.println("  2) Defend");
         System.out.println("  3) Item" + (hasItems ? "" : " [Unavailable: no items left]"));
