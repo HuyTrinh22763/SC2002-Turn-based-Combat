@@ -23,6 +23,8 @@ public abstract class AbstractCombatant implements Combatant {
     protected int specialCooldown;
     protected static final int SPECIAL_COOLDOWN_MAX = 3;
 
+    protected final java.util.List<TurnObserver> statusEffects;
+
     public AbstractCombatant(String name, int maxHp, int baseAttack, int baseDefense, int baseSpeed) {
         this.name = name;
         this.maxHp = AttributeManager.clampHp(maxHp);
@@ -42,6 +44,7 @@ public abstract class AbstractCombatant implements Combatant {
         this.stunned = false;
         this.stunDuration = 0;
         this.specialCooldown = 0;
+        this.statusEffects = new java.util.ArrayList<>();
     }
 
     @Override
@@ -114,6 +117,15 @@ public abstract class AbstractCombatant implements Combatant {
         this.attackModifier = 0;
         this.defenseModifier = 0;
         this.speedModifier = 0;
+        this.statusEffects.clear();
+    }
+
+    @Override
+    public void addStatusEffect(TurnObserver effect) {
+        if (effect != null) {
+            statusEffects.add(effect);
+            effect.onAttached(this);
+        }
     }
 
     @Override
@@ -171,6 +183,9 @@ public abstract class AbstractCombatant implements Combatant {
     @Override
     public void onTurnStart() {
         reduceCooldown();
+        for (TurnObserver effect : new java.util.ArrayList<>(statusEffects)) {
+            effect.onTurnStart(this);
+        }
     }
 
     @Override
@@ -179,6 +194,15 @@ public abstract class AbstractCombatant implements Combatant {
             stunDuration--;
         }
         syncStunFromDuration();
+        
+        java.util.Iterator<TurnObserver> iterator = statusEffects.iterator();
+        while (iterator.hasNext()) {
+            TurnObserver effect = iterator.next();
+            effect.onTurnEnd(this);
+            if (effect.isExpired()) {
+                iterator.remove();
+            }
+        }
     }
 
     @Override

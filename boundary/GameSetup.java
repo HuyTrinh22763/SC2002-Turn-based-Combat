@@ -16,7 +16,8 @@ public class GameSetup {
     public enum ItemChoice {
         POTION("Potion"),
         POWER_STONE("Power Stone"),
-        SMOKE_BOMB("Smoke Bomb");
+        SMOKE_BOMB("Smoke Bomb"),
+        CALTROPS("Caltrops");
 
         private final String displayName;
 
@@ -36,6 +37,8 @@ public class GameSetup {
                     return new PowerStone();
                 case SMOKE_BOMB:
                     return new SmokeBomb();
+                case CALTROPS:
+                    return new entity.items.Caltrops();
                 default:
                     throw new IllegalStateException("Unsupported item choice: " + this);
             }
