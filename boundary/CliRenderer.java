@@ -191,11 +191,11 @@ public class CliRenderer {
         printLine();
     }
 
-    public void renderResultPage(BattleState battleState, Player player, List<Combatant> enemies, int totalRounds) {
+    public void renderResultPage(BattleState battleState, Player player, List<Combatant> enemies, int totalRounds, List<GameSetup.ItemChoice> originalItems) {
         boxTitle("GAME COMPLETION SCREEN");
         if (battleState == BattleState.PLAYER_VICTORY) {
             System.out.println("Congratulations, you have defeated all your enemies.");
-            System.out.println("Statistics: Remaining HP: " + player.getCurrentHp() + "/" + player.getMaxHp()
+            System.out.print("Statistics: Remaining HP: " + player.getCurrentHp() + "/" + player.getMaxHp()
                     + " | Total Rounds: " + totalRounds);
         } else if (battleState == BattleState.PLAYER_DEFEAT) {
             int enemiesRemaining = getAliveEnemies(enemies).size();
@@ -204,6 +204,25 @@ public class CliRenderer {
                     + " | Total Rounds Survived: " + totalRounds);
         } else {
             System.out.println("Battle ended unexpectedly.");
+        }
+        
+        if (originalItems != null && !originalItems.isEmpty()) {
+            List<Item> currentItems = player.getInventory().getItemsView();
+            List<String> currentNames = new ArrayList<>();
+            for (Item item : currentItems) {
+                currentNames.add(item.getName());
+            }
+
+            for (GameSetup.ItemChoice choice : originalItems) {
+                System.out.print(" | ");
+                String name = choice.getDisplayName();
+                int count = 0;
+                if (currentNames.contains(name)) {
+                    count = 1;
+                    currentNames.remove(name);
+                }
+                System.out.println("Remaining " + name + ": " + count);
+            }
         }
         printLine();
     }
