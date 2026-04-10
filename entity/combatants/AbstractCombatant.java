@@ -182,7 +182,6 @@ public abstract class AbstractCombatant implements Combatant {
 
     @Override
     public void onTurnStart() {
-        reduceCooldown();
         for (TurnObserver effect : new java.util.ArrayList<>(statusEffects)) {
             effect.onTurnStart(this);
         }

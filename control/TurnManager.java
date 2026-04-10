@@ -96,6 +96,11 @@ public class TurnManager {
         }
 
         roundNumber++;
+
+        for (Combatant c : getAliveCombatants()) {
+            c.reduceCooldown();
+        }
+
         currentTurnOrder = turnOrderStrategy.determineOrder(getAliveCombatants());
         currentTurnIndex = 0;
         updateBattleState();
