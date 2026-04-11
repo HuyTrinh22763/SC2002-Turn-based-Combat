@@ -147,18 +147,24 @@ public class TurnManager {
             return result;
         }
 
-        ActionResult result;
-        if (actor == player) {
-            result = processPlayerTurn(playerRequest);
-        } else if (actor instanceof Enemy) {
-            result = processEnemyTurn((Enemy) actor);
-        } else {
-            result = ActionResult.failure(null,
-                    actor.getName() + " is not a supported combatant type.");
-        }
+        actor.prepareTurn(playerRequest);
+
+        int killsBefore = actor.getLevelSpecialKills();
+        int bonusBefore = actor.getLevelSpecialBonus();
+
+        ActionResult result = actor.performTurn(actionProcessor, getOpponentTargets(actor));
+
+        recordTurnSpecialSnapshot(actor, result, killsBefore, bonusBefore);
 
         finishTurn(actor);
         return result;
+    }
+
+    private List<Combatant> getOpponentTargets(Combatant actor) {
+        if (actor == player) {
+            return enemies;
+        }
+        return Collections.singletonList(player);
     }
 
     public void endRound() {
@@ -202,27 +208,6 @@ public class TurnManager {
         return Collections.unmodifiableList(turnSpecialSnapshots);
     }
 
-    private ActionResult processPlayerTurn(ActionRequest playerRequest) {
-        int specialKillsBefore = player.getLevelSpecialKills();
-        int specialBonusBefore = player.getLevelSpecialBonus();
-        String validationMessage = playerActionValidator.validate(player, enemies, playerRequest);
-        if (validationMessage != null) {
-            ActionResult failedResult = ActionResult.failure(
-                    playerRequest == null ? null : playerRequest.getActionType(),
-                    validationMessage
-            );
-            recordTurnSpecialSnapshot(playerRequest, failedResult, specialKillsBefore, specialBonusBefore);
-            return failedResult;
-        }
-
-        ActionResult result = actionProcessor.execute(playerRequest);
-        recordTurnSpecialSnapshot(playerRequest, result, specialKillsBefore, specialBonusBefore);
-        return result;
-    }
-
-    private ActionResult processEnemyTurn(Enemy enemy) {
-        return enemy.performTurn(actionProcessor, java.util.Collections.singletonList(player));
-    }
 
     private void finishTurn(Combatant actor) {
         actor.onTurnEnd();
@@ -319,24 +304,21 @@ public class TurnManager {
         levelSpecialProgressFinalized = true;
     }
 
-    private void recordTurnSpecialSnapshot(ActionRequest playerRequest, ActionResult result, int specialKillsBefore,
+    private void recordTurnSpecialSnapshot(Combatant actor, ActionResult result, int specialKillsBefore,
             int specialBonusBefore) {
-        int specialKillsAfter = player.getLevelSpecialKills();
-        int specialBonusAfter = player.getLevelSpecialBonus();
+        int specialKillsAfter = actor.getLevelSpecialKills();
+        int specialBonusAfter = actor.getLevelSpecialBonus();
         int deltaKills = specialKillsAfter - specialKillsBefore;
         int deltaBonus = specialBonusAfter - specialBonusBefore;
 
         ActionType actionType = result == null ? null : result.getActionType();
-        if (actionType == null && playerRequest != null) {
-            actionType = playerRequest.getActionType();
-        }
-
+        
         playerTurnCounter++;
         turnSpecialSnapshots.add(new TurnSpecialSnapshot(
                 roundNumber,
                 playerTurnCounter,
-                player.getName(),
-                player.getPlayerClass(),
+                actor.getName(),
+                actor.getPlayerClass(),
                 actionType,
                 deltaKills,
                 deltaBonus,

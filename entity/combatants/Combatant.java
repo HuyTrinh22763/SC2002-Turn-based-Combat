@@ -14,4 +14,12 @@ public interface Combatant extends CombatantStats, Damageable, CombatStatModifie
     }
 
     ActionResult performTurn(ActionProcessor processor, List<Combatant> enemies);
+
+    int getLevelSpecialKills();
+
+    int getLevelSpecialBonus();
+
+    void resetLevelSpecialProgressForLevelEnd();
+
+    PlayerClass getPlayerClass();
 }

@@ -214,6 +214,25 @@ public abstract class AbstractCombatant implements Combatant {
     }
 
     @Override
+    public int getLevelSpecialKills() {
+        return 0;
+    }
+
+    @Override
+    public int getLevelSpecialBonus() {
+        return 0;
+    }
+
+    @Override
+    public void resetLevelSpecialProgressForLevelEnd() {
+    }
+
+    @Override
+    public PlayerClass getPlayerClass() {
+        return null;
+    }
+
+    @Override
     public String toString() {
         return String.format("%s [HP: %d/%d, ATK: %d, DEF: %d, SPD: %d%s]",
                 name, currentHp, maxHp, getAttack(), getDefense(), getSpeed(),
