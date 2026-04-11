@@ -1,5 +1,9 @@
 package entity.combatants;
 
+import entity.battlerules.ActionProcessor;
+import entity.battlerules.ActionResult;
+import java.util.List;
+
 public abstract class AbstractCombatant implements Combatant {
 
     protected String name;
@@ -202,6 +206,11 @@ public abstract class AbstractCombatant implements Combatant {
                 iterator.remove();
             }
         }
+    }
+
+    @Override
+    public ActionResult performTurn(ActionProcessor processor, List<Combatant> enemies) {
+        return ActionResult.failure(null, "Turn logic not yet implemented for " + getName());
     }
 
     @Override

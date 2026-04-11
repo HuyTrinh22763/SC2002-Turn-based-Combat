@@ -221,31 +221,7 @@ public class TurnManager {
     }
 
     private ActionResult processEnemyTurn(Enemy enemy) {
-        if (!player.isAlive()) {
-            return ActionResult.failure(
-                    ActionType.BASIC_ATTACK,
-                    enemy.getName() + " cannot attack because the player is already defeated."
-            );
-        }
-
-        ActionType actionType = enemy.decideAction();
-
-        if (actionType == null) {
-            return ActionResult.failure(
-                    null,
-                    enemy.getName() + " has an unsupported action decision."
-            );
-        }
-
-        ActionRequest enemyRequest = new ActionRequest(
-                enemy,
-                actionType,
-                player,
-                null,
-                null
-        );
-
-        return actionProcessor.execute(enemyRequest);
+        return enemy.performTurn(actionProcessor, java.util.Collections.singletonList(player));
     }
 
     private void finishTurn(Combatant actor) {
