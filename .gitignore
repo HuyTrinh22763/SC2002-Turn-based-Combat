@@ -5,3 +5,5 @@ rules.md
 tasks
 SC2002_Turn-Based_Combat_Assignment_full_text.md
 .cursor 
+*.puml
+out

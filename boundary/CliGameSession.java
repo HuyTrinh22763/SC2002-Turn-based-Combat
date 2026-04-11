@@ -53,7 +53,8 @@ public class CliGameSession {
                     lastBattleState,
                     lastPlayer,
                     lastEnemies,
-                    lastRoundCount);
+                    lastRoundCount,
+                    currentSetup.getSelectedItemsView());
             List<String> postGameOptions = Arrays.asList(
                     "Replay with same setup",
                     "Start a new game",

@@ -37,6 +37,10 @@ public class PlayerActionValidator {
         }
 
         if (actionType == ActionType.SPECIAL_SKILL) {
+            if (!player.canUseSpecial()) {
+                return String.format("Special Skill is on cooldown for %d more turns!",
+                        player.getSpecialCooldown());
+            }
             Combatant target = playerRequest.getSelectedTarget();
             if (!player.isValidSpecialTargetSelection(target)) {
                 return "Special Skill target requirements not met for this player class.";
