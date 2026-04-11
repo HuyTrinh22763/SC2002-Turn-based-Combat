@@ -86,21 +86,7 @@ public abstract class Player extends AbstractCombatant {
             return ActionResult.failure(null, "Player action request is missing.");
         }
 
-        String validationError = validateAction(enemies);
-        if (validationError != null) {
-            return ActionResult.failure(nextAction.getActionType(), validationError);
-        }
-
         return processor.execute(nextAction);
-    }
-
-    private String validateAction(List<Combatant> enemies) {
-        ActionType actionType = nextAction.getActionType();
-        if (actionType == null) {
-            return "Player action type is missing.";
-        }
-
-        return actionType.validate(this, enemies, nextAction);
     }
 
     public void onSmokeAttack() {

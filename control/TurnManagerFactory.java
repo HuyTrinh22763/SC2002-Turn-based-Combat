@@ -1,6 +1,5 @@
 package control;
 
-import entity.battlerules.ActionExecutor;
 import entity.battlerules.ActionProcessor;
 import entity.battlerules.DifficultyLevel;
 import entity.battlerules.LevelCatalog;

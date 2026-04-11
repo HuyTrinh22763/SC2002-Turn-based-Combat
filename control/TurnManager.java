@@ -7,7 +7,6 @@ import entity.battlerules.ActionType;
 import entity.battlerules.EnemyWave;
 import entity.battlerules.LevelDefinition;
 import entity.combatants.Combatant;
-import entity.combatants.Enemy;
 import entity.combatants.EnemyType;
 import entity.combatants.Player;
 
