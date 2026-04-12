@@ -45,16 +45,47 @@ public class GameSetup {
         }
     }
 
+    public enum TurnStrategyType {
+        SPEED_BASED("Speed-based (Classical)"),
+        RANDOM("Random (Saga)");
+
+        private final String displayName;
+
+        TurnStrategyType(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public control.TurnOrderStrategy createStrategy() {
+            switch (this) {
+                case SPEED_BASED:
+                    return new control.SpeedBasedOrder();
+                case RANDOM:
+                    return new control.RandomTurnStrategy();
+                default:
+                    throw new IllegalStateException("Unsupported strategy: " + this);
+            }
+        }
+    }
+
     private final PlayerClass playerClass;
     private final DifficultyLevel difficultyLevel;
     private final List<ItemChoice> selectedItems;
+    private final TurnStrategyType turnStrategyType;
 
-    public GameSetup(PlayerClass playerClass, DifficultyLevel difficultyLevel, List<ItemChoice> selectedItems) {
+    public GameSetup(PlayerClass playerClass, DifficultyLevel difficultyLevel, TurnStrategyType strategyType,
+            List<ItemChoice> selectedItems) {
         if (playerClass == null) {
             throw new IllegalArgumentException("Player class cannot be null.");
         }
         if (difficultyLevel == null) {
             throw new IllegalArgumentException("Difficulty level cannot be null.");
+        }
+        if (strategyType == null) {
+            throw new IllegalArgumentException("Turn strategy type cannot be null.");
         }
         if (selectedItems == null || selectedItems.size() != 2) {
             throw new IllegalArgumentException("Exactly 2 items must be selected.");
@@ -62,6 +93,7 @@ public class GameSetup {
 
         this.playerClass = playerClass;
         this.difficultyLevel = difficultyLevel;
+        this.turnStrategyType = strategyType;
         this.selectedItems = Collections.unmodifiableList(new ArrayList<>(selectedItems));
     }
 
@@ -71,6 +103,10 @@ public class GameSetup {
 
     public DifficultyLevel getDifficultyLevel() {
         return difficultyLevel;
+    }
+
+    public TurnStrategyType getTurnStrategyType() {
+        return turnStrategyType;
     }
 
     public List<ItemChoice> getSelectedItemsView() {

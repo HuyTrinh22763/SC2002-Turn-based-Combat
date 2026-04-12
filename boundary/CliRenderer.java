@@ -80,10 +80,11 @@ public class CliRenderer {
 
     public void renderSetupSummary(GameSetup setup) {
         printSection("SELECTED SETTINGS");
-        printBullet("Player Class: " + setup.getPlayerClass().getDisplayName());
-        printBullet("Difficulty  : " + setup.getDifficultyLevel().name());
-        printBullet("Item Slot 1 : " + setup.getSelectedItemsView().get(0).getDisplayName());
-        printBullet("Item Slot 2 : " + setup.getSelectedItemsView().get(1).getDisplayName());
+        printBullet("Player Class : " + setup.getPlayerClass().getDisplayName());
+        printBullet("Difficulty   : " + setup.getDifficultyLevel().name());
+        printBullet("Turn Strategy: " + setup.getTurnStrategyType().getDisplayName());
+        printBullet("Item Slot 1  : " + setup.getSelectedItemsView().get(0).getDisplayName());
+        printBullet("Item Slot 2  : " + setup.getSelectedItemsView().get(1).getDisplayName());
         printLine();
     }
 
@@ -146,6 +147,7 @@ public class CliRenderer {
         System.out.println("  2) Defend");
         System.out.println("  3) Item" + (hasItems ? "" : " [Unavailable: no items left]"));
         System.out.println("  4) SpecialSkill");
+        System.out.println("  5) Wait");
         printLine();
     }
 
@@ -241,6 +243,10 @@ public class CliRenderer {
 
     public void printSelectItemSlot(int slot, List<String> options) {
         printMenu("SELECT ITEM FOR SLOT " + slot, options);
+    }
+
+    public void printSelectStrategyMenu(List<String> options) {
+        printMenu("SELECT TURN STRATEGY", options);
     }
 
     private void printMenu(String title, List<String> options) {

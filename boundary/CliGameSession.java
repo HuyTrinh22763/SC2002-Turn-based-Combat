@@ -86,8 +86,9 @@ public class CliGameSession {
         PlayerClass playerClass = choosePlayerClass();
         List<GameSetup.ItemChoice> selectedItems = chooseTwoItems();
         entity.battlerules.DifficultyLevel difficultyLevel = chooseDifficulty();
+        GameSetup.TurnStrategyType strategyType = chooseTurnStrategy();
 
-        return new GameSetup(playerClass, difficultyLevel, selectedItems);
+        return new GameSetup(playerClass, difficultyLevel, strategyType, selectedItems);
     }
 
     private void runSingleGame(GameSetup setup) {
@@ -96,7 +97,7 @@ public class CliGameSession {
             player.addItemToInventory(itemChoice.createItem());
         }
 
-        TurnManager turnManager = TurnManagerFactory.fromDifficulty(player, new SpeedBasedOrder(),
+        TurnManager turnManager = TurnManagerFactory.fromDifficulty(player, setup.getTurnStrategyType().createStrategy(),
                 setup.getDifficultyLevel());
 
         while (!turnManager.isBattleOver()) {
@@ -151,7 +152,7 @@ public class CliGameSession {
         while (true) {
             boolean hasItems = !player.getInventory().isEmpty();
             renderer.printPlayerActions(hasItems);
-            int actionChoice = input.readMenuChoice("> ", 1, 4);
+            int actionChoice = input.readMenuChoice("> ", 1, 5);
 
             if (actionChoice == 1) {
                 List<Combatant> aliveEnemies = getAliveEnemies(allEnemies);
@@ -181,13 +182,17 @@ public class CliGameSession {
                 return new ActionRequest(player, ActionType.USE_ITEM, target, allEnemies, itemIndex);
             }
 
-            Combatant specialTarget = null;
-            if (player.getPlayerClass().requiresTargetForSpecialSkill()) {
-                List<Combatant> aliveEnemies = getAliveEnemies(allEnemies);
-                renderer.printAliveEnemies(aliveEnemies);
-                specialTarget = aliveEnemies.get(input.chooseEnemyTarget(aliveEnemies));
+            if (actionChoice == 4) {
+                Combatant specialTarget = null;
+                if (player.getPlayerClass().requiresTargetForSpecialSkill()) {
+                    List<Combatant> aliveEnemies = getAliveEnemies(allEnemies);
+                    renderer.printAliveEnemies(aliveEnemies);
+                    specialTarget = aliveEnemies.get(input.chooseEnemyTarget(aliveEnemies));
+                }
+                return new ActionRequest(player, ActionType.SPECIAL_SKILL, specialTarget, allEnemies, null);
             }
-            return new ActionRequest(player, ActionType.SPECIAL_SKILL, specialTarget, allEnemies, null);
+
+            return new ActionRequest(player, ActionType.WAIT, null, allEnemies, null);
         }
     }
 
@@ -231,6 +236,17 @@ public class CliGameSession {
             selected.add(items[choice - 1]);
         }
         return selected;
+    }
+
+    private GameSetup.TurnStrategyType chooseTurnStrategy() {
+        GameSetup.TurnStrategyType[] strategies = GameSetup.TurnStrategyType.values();
+        List<String> strategyOptions = new ArrayList<>();
+        for (GameSetup.TurnStrategyType st : strategies) {
+            strategyOptions.add(st.getDisplayName());
+        }
+        renderer.printSelectStrategyMenu(strategyOptions);
+        int choice = input.readMenuChoice("> ", 1, strategies.length);
+        return strategies[choice - 1];
     }
 
     private List<Combatant> getAliveEnemies(List<Combatant> enemies) {
