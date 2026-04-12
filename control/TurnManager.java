@@ -20,7 +20,6 @@ public class TurnManager {
     private final List<Combatant> enemies;
     private final TurnOrderStrategy turnOrderStrategy;
     private final ActionProcessor actionProcessor;
-    private final PlayerActionValidator playerActionValidator;
     private final LevelDefinition levelDefinition;
     private final EnemyFactory enemyFactory;
 
@@ -72,7 +71,6 @@ public class TurnManager {
 
         this.turnOrderStrategy = turnOrderStrategy;
         this.actionProcessor = actionProcessor;
-        this.playerActionValidator = new PlayerActionValidator();
         this.levelDefinition = levelDefinition;
         this.enemyFactory = enemyFactory;
 

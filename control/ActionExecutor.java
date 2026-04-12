@@ -18,6 +18,7 @@ public class ActionExecutor implements ActionProcessor {
         executors.put(ActionType.DEFEND, new DefendExecutor());
         executors.put(ActionType.USE_ITEM, new UseItemExecutor());
         executors.put(ActionType.SPECIAL_SKILL, new SpecialSkillExecutor());
+        executors.put(ActionType.WAIT, new WaitExecutor());
     }
 
     @Override

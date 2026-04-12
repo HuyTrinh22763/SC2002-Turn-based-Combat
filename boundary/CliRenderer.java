@@ -146,6 +146,7 @@ public class CliRenderer {
         System.out.println("  2) Defend");
         System.out.println("  3) Item" + (hasItems ? "" : " [Unavailable: no items left]"));
         System.out.println("  4) SpecialSkill");
+        System.out.println("  5) Wait");
         printLine();
     }
 

@@ -8,7 +8,6 @@ import entity.items.Item;
 import entity.battlerules.ActionProcessor;
 import entity.battlerules.ActionRequest;
 import entity.battlerules.ActionResult;
-import entity.battlerules.ActionType;
 
 public abstract class Player extends AbstractCombatant {
 

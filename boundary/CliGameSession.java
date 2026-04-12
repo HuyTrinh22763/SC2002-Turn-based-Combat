@@ -151,7 +151,7 @@ public class CliGameSession {
         while (true) {
             boolean hasItems = !player.getInventory().isEmpty();
             renderer.printPlayerActions(hasItems);
-            int actionChoice = input.readMenuChoice("> ", 1, 4);
+            int actionChoice = input.readMenuChoice("> ", 1, 5);
 
             if (actionChoice == 1) {
                 List<Combatant> aliveEnemies = getAliveEnemies(allEnemies);
@@ -181,13 +181,17 @@ public class CliGameSession {
                 return new ActionRequest(player, ActionType.USE_ITEM, target, allEnemies, itemIndex);
             }
 
-            Combatant specialTarget = null;
-            if (player.getPlayerClass().requiresTargetForSpecialSkill()) {
-                List<Combatant> aliveEnemies = getAliveEnemies(allEnemies);
-                renderer.printAliveEnemies(aliveEnemies);
-                specialTarget = aliveEnemies.get(input.chooseEnemyTarget(aliveEnemies));
+            if (actionChoice == 4) {
+                Combatant specialTarget = null;
+                if (player.getPlayerClass().requiresTargetForSpecialSkill()) {
+                    List<Combatant> aliveEnemies = getAliveEnemies(allEnemies);
+                    renderer.printAliveEnemies(aliveEnemies);
+                    specialTarget = aliveEnemies.get(input.chooseEnemyTarget(aliveEnemies));
+                }
+                return new ActionRequest(player, ActionType.SPECIAL_SKILL, specialTarget, allEnemies, null);
             }
-            return new ActionRequest(player, ActionType.SPECIAL_SKILL, specialTarget, allEnemies, null);
+
+            return new ActionRequest(player, ActionType.WAIT, null, allEnemies, null);
         }
     }
 
