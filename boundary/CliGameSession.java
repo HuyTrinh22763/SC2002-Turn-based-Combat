@@ -86,8 +86,9 @@ public class CliGameSession {
         PlayerClass playerClass = choosePlayerClass();
         List<GameSetup.ItemChoice> selectedItems = chooseTwoItems();
         entity.battlerules.DifficultyLevel difficultyLevel = chooseDifficulty();
+        GameSetup.TurnStrategyType strategyType = chooseTurnStrategy();
 
-        return new GameSetup(playerClass, difficultyLevel, selectedItems);
+        return new GameSetup(playerClass, difficultyLevel, strategyType, selectedItems);
     }
 
     private void runSingleGame(GameSetup setup) {
@@ -96,7 +97,7 @@ public class CliGameSession {
             player.addItemToInventory(itemChoice.createItem());
         }
 
-        TurnManager turnManager = TurnManagerFactory.fromDifficulty(player, new SpeedBasedOrder(),
+        TurnManager turnManager = TurnManagerFactory.fromDifficulty(player, setup.getTurnStrategyType().createStrategy(),
                 setup.getDifficultyLevel());
 
         while (!turnManager.isBattleOver()) {
@@ -235,6 +236,17 @@ public class CliGameSession {
             selected.add(items[choice - 1]);
         }
         return selected;
+    }
+
+    private GameSetup.TurnStrategyType chooseTurnStrategy() {
+        GameSetup.TurnStrategyType[] strategies = GameSetup.TurnStrategyType.values();
+        List<String> strategyOptions = new ArrayList<>();
+        for (GameSetup.TurnStrategyType st : strategies) {
+            strategyOptions.add(st.getDisplayName());
+        }
+        renderer.printSelectStrategyMenu(strategyOptions);
+        int choice = input.readMenuChoice("> ", 1, strategies.length);
+        return strategies[choice - 1];
     }
 
     private List<Combatant> getAliveEnemies(List<Combatant> enemies) {
