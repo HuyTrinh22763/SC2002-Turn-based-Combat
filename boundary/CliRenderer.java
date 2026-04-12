@@ -140,13 +140,19 @@ public class CliRenderer {
         printLine();
     }
 
-    public void printPlayerActions(boolean hasItems) {
+    public void printPlayerActions(boolean hasItems, int specialCooldown) {
         printSection("ACTION MENU");
         System.out.println("  0) Exit Game");
         System.out.println("  1) BasicAttack");
         System.out.println("  2) Defend");
         System.out.println("  3) Item" + (hasItems ? "" : " [Unavailable: no items left]"));
-        System.out.println("  4) SpecialSkill");
+        
+        String specialLabel = "  4) SpecialSkill";
+        if (specialCooldown > 0) {
+            specialLabel += " [On Cooldown: " + specialCooldown + " round(s)]";
+        }
+        System.out.println(specialLabel);
+        
         System.out.println("  5) Wait");
         printLine();
     }
