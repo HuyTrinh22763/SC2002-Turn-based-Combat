@@ -140,13 +140,19 @@ public class CliRenderer {
         printLine();
     }
 
-    public void printPlayerActions(boolean hasItems) {
+    public void printPlayerActions(boolean hasItems, int specialCooldown) {
         printSection("ACTION MENU");
         System.out.println("  0) Exit Game");
         System.out.println("  1) BasicAttack");
         System.out.println("  2) Defend");
         System.out.println("  3) Item" + (hasItems ? "" : " [Unavailable: no items left]"));
-        System.out.println("  4) SpecialSkill");
+        
+        String specialLabel = "  4) SpecialSkill";
+        if (specialCooldown > 0) {
+            specialLabel += " [On Cooldown: " + specialCooldown + " round(s)]";
+        }
+        System.out.println(specialLabel);
+        
         System.out.println("  5) Wait");
         printLine();
     }
@@ -281,11 +287,12 @@ public class CliRenderer {
     private String formatCombatantStatus(Combatant combatant) {
         String status = combatant.isAlive() ? "ALIVE" : "ELIMINATED";
         String stun = combatant.isStunned() ? ", STUNNED(" + combatant.getStunDuration() + ")" : "";
+        String smoke = combatant.getSmokeBombDuration() > 0 ? ", SMOKE(" + combatant.getSmokeBombDuration() + "R)" : "";
         return combatant.getName() + " [HP " + combatant.getCurrentHp() + "/" + combatant.getMaxHp()
                 + " | ATK " + combatant.getAttack()
                 + " | DEF " + combatant.getDefense()
                 + " | SPD " + combatant.getSpeed()
-                + "] " + status + stun;
+                + "] " + status + stun + smoke;
     }
 
     private List<Combatant> getAliveEnemies(List<Combatant> enemies) {

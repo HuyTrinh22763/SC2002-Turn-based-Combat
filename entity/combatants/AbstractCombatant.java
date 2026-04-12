@@ -167,9 +167,7 @@ public abstract class AbstractCombatant implements Combatant {
 
     @Override
     public void useSpecial() {
-        if (canUseSpecial()) {
-            specialCooldown = SPECIAL_COOLDOWN_MAX;
-        }
+        specialCooldown = SPECIAL_COOLDOWN_MAX;
     }
 
     @Override
@@ -230,6 +228,11 @@ public abstract class AbstractCombatant implements Combatant {
     @Override
     public PlayerClass getPlayerClass() {
         return null;
+    }
+
+    @Override
+    public int getSmokeBombDuration() {
+        return 0;
     }
 
     @Override

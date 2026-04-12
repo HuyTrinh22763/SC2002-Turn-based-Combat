@@ -151,7 +151,7 @@ public class CliGameSession {
     private ActionRequest buildPlayerActionRequest(Player player, List<Combatant> allEnemies) {
         while (true) {
             boolean hasItems = !player.getInventory().isEmpty();
-            renderer.printPlayerActions(hasItems);
+            renderer.printPlayerActions(hasItems, player.getSpecialCooldown());
             int actionChoice = input.readMenuChoice("> ", 1, 5);
 
             if (actionChoice == 1) {
@@ -183,6 +183,15 @@ public class CliGameSession {
             }
 
             if (actionChoice == 4) {
+                if (!player.canUseSpecial()) {
+                    ActionResult failure = ActionResult.failure(
+                            ActionType.SPECIAL_SKILL,
+                            String.format("Special Skill is on cooldown for %d more rounds!", player.getSpecialCooldown())
+                    );
+                    renderer.printActionResult(failure);
+                    continue;
+                }
+
                 Combatant specialTarget = null;
                 if (player.getPlayerClass().requiresTargetForSpecialSkill()) {
                     List<Combatant> aliveEnemies = getAliveEnemies(allEnemies);

@@ -19,7 +19,9 @@ public class PowerStone implements Item {
 
     @Override
     public String use(Player user, List<Combatant> enemies, Combatant selectedTarget) {
-        return user.usePlayerSpecialWithoutCooldown(user.resolveSpecialTargets(enemies, selectedTarget));
+        String result = user.usePlayerSpecialWithoutCooldown(user.resolveSpecialTargets(enemies, selectedTarget));
+        user.useSpecial();
+        return result;
     }
 
     @Override
