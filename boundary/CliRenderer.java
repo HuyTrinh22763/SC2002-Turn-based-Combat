@@ -281,11 +281,12 @@ public class CliRenderer {
     private String formatCombatantStatus(Combatant combatant) {
         String status = combatant.isAlive() ? "ALIVE" : "ELIMINATED";
         String stun = combatant.isStunned() ? ", STUNNED(" + combatant.getStunDuration() + ")" : "";
+        String smoke = combatant.getSmokeBombDuration() > 0 ? ", SMOKE(" + combatant.getSmokeBombDuration() + "R)" : "";
         return combatant.getName() + " [HP " + combatant.getCurrentHp() + "/" + combatant.getMaxHp()
                 + " | ATK " + combatant.getAttack()
                 + " | DEF " + combatant.getDefense()
                 + " | SPD " + combatant.getSpeed()
-                + "] " + status + stun;
+                + "] " + status + stun + smoke;
     }
 
     private List<Combatant> getAliveEnemies(List<Combatant> enemies) {

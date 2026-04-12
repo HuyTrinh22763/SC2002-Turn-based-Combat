@@ -22,4 +22,6 @@ public interface Combatant extends CombatantStats, Damageable, CombatStatModifie
     void resetLevelSpecialProgressForLevelEnd();
 
     PlayerClass getPlayerClass();
+    
+    int getSmokeBombDuration();
 }

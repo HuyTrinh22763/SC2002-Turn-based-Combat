@@ -13,9 +13,9 @@ public abstract class Player extends AbstractCombatant {
 
     protected final PlayerClass playerClass;
     protected final Inventory inventory;
-    private static final int SMOKE_BOMB_USAGE = 3;
+    private static final int SMOKE_BOMB_DURATION = 2;
     private static final int DEFEND_ROUNDS = 2;
-    private int smokeBombEffectRemaining;
+    private int smokeBombDuration;
     private int defendRoundsRemaining;
     private ActionRequest nextAction;
 
@@ -28,7 +28,7 @@ public abstract class Player extends AbstractCombatant {
 
         this.playerClass = playerClass;
         this.inventory = new Inventory();
-        this.smokeBombEffectRemaining = 0;
+        this.smokeBombDuration = 0;
         this.defendRoundsRemaining = 0;
     }
 
@@ -50,11 +50,16 @@ public abstract class Player extends AbstractCombatant {
     }
 
     public void activateSmokeBomb() {
-        smokeBombEffectRemaining = SMOKE_BOMB_USAGE;
+        smokeBombDuration = SMOKE_BOMB_DURATION;
     }
 
     public boolean isSmokeBombActive() {
-        return smokeBombEffectRemaining > 0;
+        return smokeBombDuration > 0;
+    }
+
+    @Override
+    public int getSmokeBombDuration() {
+        return smokeBombDuration;
     }
 
     public void activateDefend() {
@@ -72,6 +77,10 @@ public abstract class Player extends AbstractCombatant {
                 modifyDefense(-10);
             }
         }
+        
+        if (smokeBombDuration > 0) {
+            smokeBombDuration--;
+        }
     }
 
     @Override
@@ -88,11 +97,6 @@ public abstract class Player extends AbstractCombatant {
         return processor.execute(nextAction);
     }
 
-    public void onSmokeAttack() {
-        if (smokeBombEffectRemaining > 0) {
-            smokeBombEffectRemaining--;
-        }
-    }
 
     public abstract String usePlayerSpecial(List<Combatant> targets);
     public abstract String usePlayerSpecialWithoutCooldown(List<Combatant> targets);

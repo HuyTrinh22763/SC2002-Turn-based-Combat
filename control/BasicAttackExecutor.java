@@ -27,7 +27,6 @@ public class BasicAttackExecutor implements ActionProcessor {
         if (actor instanceof Enemy && target instanceof Player) {
             Player playerTarget = (Player) target;
             if (playerTarget.isSmokeBombActive()) {
-                playerTarget.onSmokeAttack();
                 return ActionResult.success(ActionType.BASIC_ATTACK, 0, 0, false,
                         Collections.singletonList(actor.getName() + " uses BasicAttack on " + target.getName()
                                 + " but Smoke Bomb reduces the damage to 0."));

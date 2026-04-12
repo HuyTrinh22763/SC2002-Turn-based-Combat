@@ -233,6 +233,11 @@ public abstract class AbstractCombatant implements Combatant {
     }
 
     @Override
+    public int getSmokeBombDuration() {
+        return 0;
+    }
+
+    @Override
     public String toString() {
         return String.format("%s [HP: %d/%d, ATK: %d, DEF: %d, SPD: %d%s]",
                 name, currentHp, maxHp, getAttack(), getDefense(), getSpeed(),
